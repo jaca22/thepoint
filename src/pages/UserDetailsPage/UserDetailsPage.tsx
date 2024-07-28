@@ -1,6 +1,8 @@
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
+import { Person } from 'type';
+
 import { useFetch } from 'hooks';
 
 import { Button } from 'components';
@@ -12,7 +14,7 @@ import { Styled } from './UserPageDetails.styles';
 function UserDetailsPage() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { data, state: fetchState } = useFetch<any>(`https://swapi.dev/api/people/${id}/`);
+  const { data, state: fetchState } = useFetch<Person>(`https://swapi.dev/api/people/${id}/`);
 
   const backToList = () => {
     navigate('/users/');
@@ -25,13 +27,13 @@ function UserDetailsPage() {
   return (
     <>
       <Button onClick={backToList}>Go Back</Button>
-
       <Styled.Container>
         <Styled.UserDetails>
           <Styled.UserDetailsGrid>
             {Object.keys(data ?? {}).map((key) => {
-              const value = data[key];
-              if (Array.isArray(value)) {
+              const value = data && data[key];
+
+              if (Array.isArray(value) || !value) {
                 return null;
               }
 
@@ -44,7 +46,7 @@ function UserDetailsPage() {
             })}
           </Styled.UserDetailsGrid>
         </Styled.UserDetails>
-        <Movies urls={data.films} />
+        {data?.films && (<Movies urls={data.films} />)}
       </Styled.Container>
     </>
   );

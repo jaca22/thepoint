@@ -1,4 +1,5 @@
 export type Person = {
+  [key: string]: any;
   id: number;
   name: string;
   skin_color: string;
