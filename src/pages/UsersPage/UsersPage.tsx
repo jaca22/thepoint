@@ -13,10 +13,9 @@ import { Styled } from './UserPage.styles';
 
 function UsersPage() {
   const navigate = useNavigate();
-  const [activeItems, setActiveItems] = useState<string[]>([]);
+  const [activeItems, setActiveItems] = useState<number[]>([]);
   const { data, state: fetchState } = useFetch<{ results: Person[] }>('https://swapi.dev/api/people/');
   const { breakpoint } = useBreakpoint();
-
   const isSmallScreen = ['xs', 'sm'].includes(breakpoint);
 
   const tableData: Person[][] = useMemo(() => {
@@ -26,7 +25,7 @@ function UsersPage() {
     return isSmallScreen ? [parsedData] : chunk(parsedData ?? [], 5);
   }, [data?.results, isSmallScreen]);
 
-  const onItemClickHandler = (index: string) => {
+  const onItemClickHandler = (index: number) => {
     setActiveItems((state) => (
       state.includes(index)
         ? [...state].filter((item) => item !== index)
@@ -66,18 +65,17 @@ function UsersPage() {
               </Table.Tr>
             </Table.THead>
             <Table.TBody>
-              {group.map((person, index) => {
-                const itemId = `${chunkIndex}_${index}`;
-                const isActive = activeItems.includes(itemId);
+              {group.map((person) => {
+                const isActive = activeItems.includes(person.id);
 
                 return (
-                  <Table.Tr key={itemId}>
+                  <Table.Tr key={person.id}>
                     <Table.Td label="#ID">
                       {person.id}
                     </Table.Td>
                     <Table.Td
                       label="Name"
-                      onClick={() => onItemClickHandler(itemId)}
+                      onClick={() => onItemClickHandler(person.id)}
                       style={{
                         cursor: 'pointer',
                         color: isActive ? 'red' : 'black',
