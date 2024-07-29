@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { chunk } from 'utils';
 
-import { useFetch } from 'hooks';
+import { useBreakpoint, useFetch } from 'hooks';
 
 import { Table, Button } from 'components';
 
@@ -13,18 +13,24 @@ import { Styled } from './UserPage.styles';
 
 function UsersPage() {
   const navigate = useNavigate();
-  const [activeItem, setActiveItem] = useState<string | null>(null);
+  const [activeItems, setActiveItems] = useState<string[]>([]);
   const { data, state: fetchState } = useFetch<{ results: Person[] }>('https://swapi.dev/api/people/');
+  const { breakpoint } = useBreakpoint();
 
-  const chunks: Person[][] = useMemo(() => {
+  const isSmallScreen = ['xs', 'sm'].includes(breakpoint);
+
+  const tableData: Person[][] = useMemo(() => {
     const parsedData = data?.results?.map((item, index) => ({
       ...item, id: index + 1,
     }));
-    return chunk(parsedData ?? [], 5);
-  }, [data?.results]);
+    return isSmallScreen ? [parsedData] : chunk(parsedData ?? [], 5);
+  }, [data?.results, isSmallScreen]);
 
   const onItemClickHandler = (index: string) => {
-    setActiveItem((state) => (state === index ? null : index));
+    setActiveItems((state) => (
+      state.includes(index)
+        ? [...state].filter((item) => item !== index)
+        : [...state, index]));
   };
 
   const goToDetails = (id: number) => {
@@ -37,12 +43,12 @@ function UsersPage() {
 
   return (
     <Styled.TableContainer>
-      {chunks.map((group, chunkIndex) => (
+      {tableData.map((group, chunkIndex) => (
         <Styled.TableContainerItem key={`table-${chunkIndex}`}>
           <Table>
             <Table.THead>
               <Table.Tr>
-                <Table.Th>
+                <Table.Th style={{ width: '40px' }}>
                   #ID
                 </Table.Th>
                 <Table.Th resizable>
@@ -62,7 +68,8 @@ function UsersPage() {
             <Table.TBody>
               {group.map((person, index) => {
                 const itemId = `${chunkIndex}_${index}`;
-                const isActive = itemId === activeItem;
+                const isActive = activeItems.includes(itemId);
+
                 return (
                   <Table.Tr key={itemId}>
                     <Table.Td label="#ID">

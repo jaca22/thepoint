@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 
+import { mediaQuery } from 'styles/breakpoints';
+
 const Th = styled.th`
   padding: 0.65rem;
   text-align: inherit;
@@ -39,46 +41,45 @@ const Table = styled.table`
   max-width: 100%;
   border-radius: 8px;
   border-collapse: collapse;
+    
+  ${mediaQuery.sm`
+    table {
+        border: 0;
+    }
 
-  @media screen and (max-width: 600px) {
-      table {
-          border: 0;
-      }
+    thead {
+       border: none;
+       clip: rect(0 0 0 0);
+       height: 1px;
+       margin: -1px;
+       overflow: hidden;
+       padding: 0;
+       position: absolute;
+       width: 1px;
+    }
 
-      ${THead} {
-          border: none;
-          clip: rect(0 0 0 0);
-          height: 1px;
-          margin: -1px;
-          overflow: hidden;
-          padding: 0;
-          position: absolute;
-          width: 1px;
-      }
+    tr {
+       display: block;
+       margin-bottom: .625rem;
+    }
 
-      ${Tr} {
-          display: block;
-          margin-bottom: .625rem;
-      }
-
-      ${Td} {
-          border-bottom: 1px solid #dee2e6;
-          display: block;
-          font-size: 0.8rem;
-          text-align: right;
+    td {
+       border-bottom: 1px solid #dee2e6;
+       display: block;
+       font-size: 0.8rem;
+       text-align: right;
         
-          &::before {
-            content: attr(data-label);
-            float: left;
-            font-weight: bold;
-            text-transform: uppercase;
-          }
-      }
+       &::before {
+         content: attr(data-label);
+         float: left;
+         font-weight: bold;
+       }
+    }
       
-      ${Td}:last-child {
-          border-bottom: 0;
-      }
-  }
+    td:last-child {
+       border-bottom: 0;
+    }
+  `}
 `;
 
 export const Styled = {
