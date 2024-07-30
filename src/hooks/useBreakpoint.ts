@@ -17,7 +17,8 @@ const useBreakpoint = (breakpoints = defaultBreakpoints) => {
         return b[0];
       }
     }
-    return breakpoints[breakpoints.length - 1][0];
+
+    return sortedBreakpoints[sortedBreakpoints.length - 1][0];
   };
 
   return {
